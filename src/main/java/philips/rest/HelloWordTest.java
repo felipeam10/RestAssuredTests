@@ -64,4 +64,17 @@ public class HelloWordTest {
 
     }
 
+    @Test
+    public void validarBody() {
+
+        given()
+        .when()
+            .get("https://restapi.wcaquino.me/ola")
+        .then()
+            .statusCode(200)
+            .body(is("Ola Mundo!"))
+                .body(containsString("undo"))
+                .body(is(not(nullValue())))
+        ;
+    }
 }
