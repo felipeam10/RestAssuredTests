@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
@@ -125,5 +126,20 @@ public class UserJsonTest {
             .body("salary.findAll{it != null}.sum()", is(closeTo(3734.5678f, 0.001)))
             .body("salary.findAll{it != null}.sum()", allOf(greaterThan(3000d), lessThan(5000d)))
         ;
+    }
+
+    @Test
+    public void unindoJsonPathComJava() {
+        ArrayList<String> names =
+            given()
+            .when()
+                .get("https://restapi.wcaquino.me/users")
+            .then()
+                .statusCode(200)
+                .extract().path("name.findAll{it.startsWith('Maria')}")
+            ;
+        Assert.assertEquals(1, names.size());
+        Assert.assertTrue(names.get(0).equalsIgnoreCase("mArIa Joaquina"));
+        Assert.assertEquals(names.get(0).toUpperCase(), "maria joaquina".toUpperCase());
     }
 }
