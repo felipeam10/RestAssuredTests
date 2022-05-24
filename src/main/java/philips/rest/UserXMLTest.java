@@ -3,7 +3,13 @@ package philips.rest;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
+
+import io.restassured.internal.path.xml.NodeImpl;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class UserXMLTest {
 
@@ -44,4 +50,18 @@ public class UserXMLTest {
         ;
     }
 
+
+    @Test
+    public void pesquisasAvancadasComXmlEJava(){
+        ArrayList<NodeImpl> nomes = given()
+            .when()
+                .get("https://restapi.wcaquino.me/usersXML")
+            .then()
+                .statusCode(200)
+                .extract().path("users.user.name.findAll{it.toString().contains('n')}")
+        ;
+        Assert.assertEquals(2, nomes.size());
+        Assert.assertEquals("Maria Joaquina".toUpperCase(), nomes.get(0).toString().toUpperCase());
+        Assert.assertTrue("ANA JULIA".equalsIgnoreCase(nomes.get(1).toString()));
+    }
 }
