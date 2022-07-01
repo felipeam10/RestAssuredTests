@@ -4,8 +4,10 @@ package philips.rest;
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
+import io.restassured.RestAssured;
 import io.restassured.internal.path.xml.NodeImpl;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,11 +15,19 @@ import java.util.Locale;
 
 public class UserXMLTest {
 
+    @BeforeClass
+    public static void setup(){
+        RestAssured.baseURI = "https://restapi.wcaquino.me";
+//        RestAssured.port = 443;
+//        RestAssured.basePath = "/v2";c
+    }
+
     @Test
     public void trabalhandoComXml(){
         given()
+                .log().all()
         .when()
-            .get("https://restapi.wcaquino.me/usersXML/3")
+            .get("/usersXML/3")
         .then()
             .statusCode(200)
             .rootPath("user")
@@ -36,7 +46,7 @@ public class UserXMLTest {
     public void pesquisasAvancadasComXml(){
         given()
         .when()
-            .get("https://restapi.wcaquino.me/usersXML")
+            .get("/usersXML")
         .then()
             .statusCode(200)
             .body("users.user.size()", is(3))
@@ -55,7 +65,7 @@ public class UserXMLTest {
     public void pesquisasAvancadasComXmlEJava(){
         ArrayList<NodeImpl> nomes = given()
             .when()
-                .get("https://restapi.wcaquino.me/usersXML")
+                .get("/usersXML")
             .then()
                 .statusCode(200)
                 .extract().path("users.user.name.findAll{it.toString().contains('n')}")
@@ -69,7 +79,7 @@ public class UserXMLTest {
     public void pesquisasAvancadasComXPath(){
         given()
         .when()
-            .get("https://restapi.wcaquino.me/usersXML")
+            .get("/usersXML")
         .then()
             .statusCode(200)
             .body(hasXPath("count(/users/user)", is("3")))
