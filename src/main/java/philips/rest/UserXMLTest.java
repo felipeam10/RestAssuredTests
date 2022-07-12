@@ -5,7 +5,12 @@ import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.internal.path.xml.NodeImpl;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,21 +20,36 @@ import java.util.Locale;
 
 public class UserXMLTest {
 
+    public static RequestSpecification reqSpec;
+    public static ResponseSpecification respSpec;
+
     @BeforeClass
     public static void setup(){
         RestAssured.baseURI = "https://restapi.wcaquino.me";
 //        RestAssured.port = 443;
 //        RestAssured.basePath = "/v2";c
+
+        RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+        reqBuilder.log(LogDetail.ALL);
+        reqSpec = reqBuilder.build();
+
+        ResponseSpecBuilder respBuilder = new ResponseSpecBuilder();
+        respBuilder.expectStatusCode(200);
+        respSpec = respBuilder.build();
+
+        RestAssured.requestSpecification = reqSpec;
+        RestAssured.responseSpecification = respSpec;
     }
 
     @Test
     public void trabalhandoComXml(){
-        given()
+        given(reqSpec)
                 .log().all()
         .when()
             .get("/usersXML/3")
         .then()
-            .statusCode(200)
+//            .statusCode(200)
+//            .spec(respSpec)
             .rootPath("user")
             .body("name", is("Ana Julia"))
             .body("@id", is("3"))
@@ -45,10 +65,12 @@ public class UserXMLTest {
     @Test
     public void pesquisasAvancadasComXml(){
         given()
+//            .spec(reqSpec)
         .when()
             .get("/usersXML")
         .then()
-            .statusCode(200)
+//            .statusCode(200)
+//            .spec(respSpec)
             .body("users.user.size()", is(3))
             .body("users.user.findAll{it.age.toInteger() <= 25}.size()", is(2))
             .body("users.user.@id", hasItems("1", "2", "3"))
