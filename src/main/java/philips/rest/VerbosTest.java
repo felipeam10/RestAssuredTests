@@ -3,6 +3,7 @@ package philips.rest;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
@@ -40,6 +41,24 @@ public class VerbosTest {
             .statusCode(400)
             .body("id", is(Matchers.nullValue()))
             .body("error", is("Name é um atributo obrigatório"))
+        ;
+    }
+
+    @Test
+    public void deveSalvarUsuarioXml(){
+
+        given()
+            .log().all()
+            .contentType(ContentType.XML)
+            .body("<user><name>Joaozinho</name><age>43</age></user>")
+        .when()
+            .post("https://restapi.wcaquino.me/usersXML")
+        .then()
+            .log().all()
+            .statusCode(201)
+            .body("user.id", is(notNullValue()))
+            .body("user.name", is("Joaozinho"))
+            .body("user.age", is("43"))
         ;
     }
 }
