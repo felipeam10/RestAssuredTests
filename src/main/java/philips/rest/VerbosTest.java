@@ -12,17 +12,34 @@ public class VerbosTest {
     public void deveSalvarUsuario(){
 
         given()
-                .log().all()
-                .contentType("application/json")
-                .body("{ \"name\": \"Zezim\", \"age\": 50 }")
+            .log().all()
+            .contentType("application/json")
+            .body("{ \"name\": \"Zezim\", \"age\": 50 }")
         .when()
-                .post("https://restapi.wcaquino.me/users")
+            .post("https://restapi.wcaquino.me/users")
         .then()
-                .log().all()
-                .statusCode(201)
-                .body("id", is(Matchers.notNullValue()))
-                .body("name", is("Zezim"))
-                .body("age", is(50))
+            .log().all()
+            .statusCode(201)
+            .body("id", is(Matchers.notNullValue()))
+            .body("name", is("Zezim"))
+            .body("age", is(50))
+        ;
+    }
+
+    @Test
+    public void naoDeveSalvarUsuarioSemNome(){
+
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body("{\"age\": 50 }")
+        .when()
+            .post("https://restapi.wcaquino.me/users")
+        .then()
+            .log().all()
+            .statusCode(400)
+            .body("id", is(Matchers.nullValue()))
+            .body("error", is("Name é um atributo obrigatório"))
         ;
     }
 }
