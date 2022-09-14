@@ -61,4 +61,23 @@ public class VerbosTest {
             .body("user.age", is("43"))
         ;
     }
+
+    @Test
+    public void deveAlterarUsuarioSemNome(){
+
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body("{ \"name\": \"Zezao\", \"age\": 99 }")
+        .when()
+            .put("https://restapi.wcaquino.me/users/1")
+        .then()
+            .log().all()
+            .statusCode(200)
+            .body("id", is(1))
+            .body("name", is("Zezao"))
+            .body("age", is(99))
+            .body("salary", is(1234.5678f))
+        ;
+    }
 }
