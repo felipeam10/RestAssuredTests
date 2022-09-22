@@ -171,4 +171,23 @@ public class VerbosTest {
             .body("age", is(25))
         ;
     }
+
+    @Test
+    public void deveSalvarUsuarioUsandoObjeto(){
+        User user = new User("UsuarioViaObjeto", 35);
+
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body(user)
+        .when()
+            .post("https://restapi.wcaquino.me/users")
+        .then()
+            .log().all()
+            .statusCode(201)
+            .body("id", is(Matchers.notNullValue()))
+            .body("name", is("UsuarioViaObjeto"))
+            .body("age", is(35))
+        ;
+    }
 }
