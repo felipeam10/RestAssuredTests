@@ -7,6 +7,9 @@ import io.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class VerbosTest {
 
     @Test
@@ -145,6 +148,27 @@ public class VerbosTest {
             .log().all()
             .statusCode(400)
             .body("error", is("Registro inexistente"))
+        ;
+    }
+
+    @Test
+    public void deveSalvarObjetoUsandoMap(){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "UsuarioMap");
+        params.put("age", 25);
+
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body(params)
+        .when()
+            .post("https://restapi.wcaquino.me/users")
+        .then()
+            .log().all()
+            .statusCode(201)
+            .body("id", is(Matchers.notNullValue()))
+            .body("name", is("UsuarioMap"))
+            .body("age", is(25))
         ;
     }
 }
