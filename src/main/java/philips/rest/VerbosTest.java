@@ -213,4 +213,24 @@ public class VerbosTest {
         Assert.assertEquals("UsuarioDeserializado", usuarioInserido.getName());
         Assert.assertThat(usuarioInserido.getAge(), is(39));
     }
+
+    @Test
+    public void deveSalvarUsuarioViaXMLUsandoObjeto(){
+        User user = new User("UsuarioSerializadoXML", 40);
+
+        given()
+            .log().all()
+            .contentType(ContentType.XML)
+            .body(user)
+        .when()
+            .post("https://restapi.wcaquino.me/usersXML")
+        .then()
+            .log().all()
+            .statusCode(201)
+            .body("user.id", is(notNullValue()))
+            .body("user.name", is("UsuarioSerializadoXML"))
+            .body("user.age", is("40"))
+        ;
+    }
+
 }
