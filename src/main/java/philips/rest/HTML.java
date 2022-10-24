@@ -1,10 +1,12 @@
 package philips.rest;
 
 import io.restassured.http.ContentType;
+import org.hamcrest.xml.HasXPath;
 import org.junit.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
+
 
 public class HTML {
 
@@ -22,6 +24,21 @@ public class HTML {
                 .body("html.body.div.table.tbody.tr[1].td[2]", is("25"))
                 .appendRootPath("html.body.div.table.tbody")
                 .body("tr.find{it.toString().startsWith('2')}.td[1]", is("Maria Joaquina"))
+        ;
+    }
+
+    @Test
+    public void deveFazerBuscasComXpathEHtml(){
+        given()
+                .log().all()
+        .when()
+                .get("https://restapi.wcaquino.me/v2/users?format=clean")
+        .then()
+                .log().all()
+                .statusCode(200)
+                .contentType(ContentType.HTML)
+                .body(new HasXPath("count(//table/tr)", is("4")))
+                .body(new HasXPath("//td[text() = '2']/../td[2]", is("Maria Joaquina")))
         ;
     }
 }
