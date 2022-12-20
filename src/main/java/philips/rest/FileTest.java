@@ -37,4 +37,18 @@ public class FileTest {
                 .body("name", is("users.pdf"))
         ;
     }
+
+    @Test
+    public void naoDeveFazerUploadDeArquivoGrande(){
+        given()
+                .log().all()
+                .multiPart("arquivo", new File("src/main/resources/VID-20221114-WA0144.mp4"))
+        .when()
+                .post("https://restapi.wcaquino.me/upload")
+        .then()
+                .log().all()
+                .time(lessThan(2000L))
+                .statusCode(413)
+        ;
+    }
 }
