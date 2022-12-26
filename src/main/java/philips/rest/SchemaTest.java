@@ -2,6 +2,7 @@ package philips.rest;
 
 import io.restassured.http.ContentType;
 import io.restassured.matcher.RestAssuredMatchers;
+import io.restassured.module.jsv.JsonSchemaValidator;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,6 +37,18 @@ public class SchemaTest {
         .then()
                 .log().all()
                 .body(RestAssuredMatchers.matchesXsdInClasspath("users.xsd"))
+        ;
+    }
+
+    @Test
+    public void deveValidarSchemaJson() {
+        given()
+                .log().all()
+        .when()
+                .get("https://restapi.wcaquino.me/users")
+        .then()
+                .log().all()
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("users.json"))
         ;
     }
 }
