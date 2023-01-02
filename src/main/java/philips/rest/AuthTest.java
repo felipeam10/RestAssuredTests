@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.xml.sax.SAXParseException;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -103,6 +105,37 @@ public class AuthTest {
                 .log().all()
                 .statusCode(200)
                 .body("status", is("logado"))
+        ;
+
+    }
+
+    @Test
+    public void deveFazerAutenticacaoComToken(){
+        Map<String, String> login = new HashMap<String, String>();
+        login.put("email", "felipeam10@hotmail.com");
+        login.put("senha", "123456");
+
+        String token = given()
+                .log().all()
+                .body(login)
+                .contentType(ContentType.JSON)
+        .when()
+                .post("https://barrigarest.wcaquino.me/signin")
+        .then()
+                .log().all()
+                .statusCode(200)
+                .extract().path("token")
+        ;
+
+        given()
+                .log().all()
+                .header("Authorization", "JWT " + token)
+        .when()
+                .get("https://barrigarest.wcaquino.me/contas")
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("nome", hasItem("Conta para alterar"))
         ;
 
     }
