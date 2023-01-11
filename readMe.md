@@ -21,4 +21,7 @@ Este repositório "RestAssuredTests" equivale da seção 1 a seção 11
 * https://restapi.wcaquino.me/basicauth
 * https://seubarriga.wcaquino.me/login
 
-Obs: PDZ ZUP
+Obs: PDZ ZUP <br />
+Obs2: já havia feito este curso anteriormente nos seguintes repositórios: <br />
+https://github.com/felipeam10/RestAssuredAPITests <br />
+https://github.com/felipeam10/BellyRest <br />
